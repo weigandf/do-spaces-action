@@ -71,7 +71,7 @@ async function run() {
 		const isFile = fileStat.isFile()
 		if (isFile) {
 			const fileName = path.basename(source)
-			const s3Path = path.join(outDir, fileName)
+			const s3Path = path.join(outDir, fileName).replace(/\\/g, '/')
 
 			outDir = path.join(outDir, fileName)
 
@@ -87,7 +87,7 @@ async function run() {
 					const stat = await fs.promises.stat(fullPath)
 
 					if (stat.isFile()) {
-						const s3Path = path.join(outDir, path.relative(source, fullPath))
+						const s3Path = path.join(outDir, path.relative(source, fullPath)).replace(/\\/g, '/')
 						core.debug('Uploading: ' + s3Path)
 						await s3.upload(fullPath, s3Path)
 					} else {
