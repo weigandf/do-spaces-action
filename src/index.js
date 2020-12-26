@@ -71,6 +71,8 @@ async function run() {
 		const isFile = fileStat.isFile()
 		if (isFile) {
 			const fileName = path.basename(source)
+			// in the case of a build using windows as base OS backslashes are used as the path separator
+			// for the correct folder structure on upload we need to replace them with a (forward) slash
 			const s3Path = path.join(outDir, fileName).replace(/\\/g, '/')
 
 			outDir = path.join(outDir, fileName)
@@ -87,6 +89,8 @@ async function run() {
 					const stat = await fs.promises.stat(fullPath)
 
 					if (stat.isFile()) {
+						// in the case of a build using windows as base OS backslashes are used as the path separator
+						// for the correct folder structure on upload we need to replace them with a (forward) slash
 						const s3Path = path.join(outDir, path.relative(source, fullPath)).replace(/\\/g, '/')
 						core.debug('Uploading: ' + s3Path)
 						await s3.upload(fullPath, s3Path)
